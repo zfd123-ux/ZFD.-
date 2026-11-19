@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
+<title>张方迪的个人作品集</title>
+<!--
+  ============================================================
+  单文件作品集 · 张方迪
+  - 无外部依赖（字体/图片/库全部内联）
+  - 保存为 index.html 双击即可预览
+  - 部署：Netlify Drop 拖入此文件 / GitHub Pages 上传即可
+  ============================================================
+-->
+<style>
+/* ============ 基础 ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050505;
+  --bg-2:#0a0807;
+  --accent:#ff4a12;
+  --accent-2:#ff8a1f;
+  --text:#ffffff;
+  --muted:#8b8b8b;
+  --line:rgba(255,255,255,.09);
+  --panel:rgba(255,255,255,.045);
+  --panel-solid:#100c0a;
+  --glow:rgba(255,74,18,.35);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:"Inter","Helvetica Neue",-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+body.editing{user-select:none}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::selection{background:var(--accent);color:#fff}
+
+/* ============ 开屏动画 ============ */
+#splash{
+  position:fixed;inset:0;z-index:9999;background:#000;
+  display:grid;place-items:center;
+  transition:opacity .7s ease,transform .9s cubic-bezier(.65,0,.25,1),filter .7s;
+}
+#splash.done{opacity:0;transform:scale(1.4);filter:blur(14px);pointer-events:none}
+.splash-inner{display:flex;flex-direction:column;align-items:center;gap:22px;position:relative}
+.splash-ring{
+  width:74px;height:74px;border-radius:50%;
+  border:2px solid rgba(255,74,18,.14);
+  border-top-color:var(--accent);
+  border-right-color:var(--accent-2);
+  animation:spin 1.1s linear infinite;
+  box-shadow:0 0 60px rgba(255,74,18,.55),inset 0 0 24px rgba(255,74,18,.18);
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.splash-name{
+  font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:.22em;
+  background:linear-gradient(100deg,#fff 0%,#ffb070 40%,var(--accent) 70%,#ff2a00 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px rgba(255,74,18,.45);
+}
+.splash-sub{font-size:11px;letter-spacing:.55em;color:#7a4a35;margin-top:-12px}
+.splash-bar{width:170px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.splash-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent-2),var(--accent));animation:fill 3s cubic-bezier(.4,0,.2,1) forwards;box-shadow:0 0 14px var(--accent)}
+@keyframes fill{to{width:100%}}
+
+/* ============ 首屏 ============ */
+#hero{
+  position:relative;min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;
+  padding:0 clamp(16px,4vw,56px) clamp(18px,3vh,38px);
+  overflow:hidden;
+}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hero-glow{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 105%,rgba(255,74,18,.20),transparent 70%),
+    radial-gradient(ellipse 40% 40% at 85% 20%,rgba(255,42,0,.12),transparent 70%),
+    radial-gradient(ellipse 45% 40% at 10% 75%,rgba(255,138,31,.08),transparent 70%),
+    linear-gradient(180deg,rgba(5,5,5,.5) 0%,rgba(5,5,5,0) 25%,rgba(5,5,5,0) 70%,rgba(5,5,5,.85) 100%);
+}
+.hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 180px 40px rgba(0,0,0,.9)}
+
+/* 顶栏 */
+.site-header{
+  position:relative;z-index:6;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 0;gap:16px;
+}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.04em;font-size:16px}
+.logo-mark{
+  width:12px;height:12px;border-radius:3px;
+  background:linear-gradient(135deg,var(--accent-2),var(--accent));
+  box-shadow:0 0 18px var(--accent),0 0 34px rgba(255,74,18,.5);
+  transform:rotate(45deg);
+}
+.site-nav{
+  position:absolute;left:50%;transform:translateX(-50%);
+  display:flex;gap:clamp(14px,2.6vw,36px);
+}
+.site-nav a{
+  font-size:13.5px;color:#b9b9b9;letter-spacing:.06em;
+  position:relative;padding:6px 2px;transition:color .3s;
+}
+.site-nav a::after{
+  content:"";position:absolute;left:0;bottom:0;height:1.5px;width:0;
+  background:linear-gradient(90deg,var(--accent-2),var(--accent));
+  transition:width .35s cubic-bezier(.4,0,.2,1);
+}
+.site-nav a:hover{color:#fff}
+.site-nav a:hover::after{width:100%}
+.header-right{display:flex;align-items:center;gap:12px}
+.icon-btn{
+  width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:.35s;font-size:16px;color:#cfcfcf;
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);
+  box-shadow:0 0 26px rgba(255,74,18,.45);transform:rotate(60deg)}
+.btn-accent{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;border-radius:100px;
+  background:linear-gradient(100deg,var(--accent),var(--accent-2));
+  color:#120400;font-weight:800;font-size:13.5px;letter-spacing:.04em;
+  box-shadow:0 8px 30px -6px rgba(255,74,18,.7),inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .3s,box-shadow .3s,filter .3s;
+  white-space:nowrap;
+}
+.btn-accent:hover{transform:translateY(-2px);filter:brightness(1.12);
+  box-shadow:0 14px 40px -8px rgba(255,74,18,.85),inset 0 1px 0 rgba(255,255,255,.5)}
+
+/* 主内容 */
+.hero-main{
+  position:relative;z-index:4;
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding-top:clamp(10px,4vh,54px);
+  width:100%;
+}
+.title-block{position:relative;width:100%;text-align:center}
+.hero-title{
+  font-size:clamp(38px,10.4vw,158px);
+  font-weight:900;line-height:.86;letter-spacing:-.045em;
+  background:linear-gradient(175deg,#fff 20%,#e8e8e8 55%,#9a9a9a 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 14px 60px rgba(0,0,0,.9));
+  white-space:nowrap;
+}
+.slash-row{display:flex;justify-content:flex-end;width:100%;padding-right:clamp(0px,4vw,60px);margin-top:-4px}
+.hero-slash{
+  font-size:clamp(13px,1.7vw,25px);font-weight:800;letter-spacing:.12em;
+  color:var(--accent);text-shadow:0 0 26px rgba(255,74,18,.8);
+}
+.hero-tagline{
+  margin-top:clamp(6px,1.2vh,14px);
+  font-size:clamp(11px,1.25vw,14.5px);
+  letter-spacing:.42em;color:var(--accent-2);font-weight:600;
+  text-shadow:0 0 30px rgba(255,138,31,.55);
+  text-align:center;
+}
+/* 两张图 */
+.hero-gallery{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(10px,1.6vw,22px);
+  width:100%;max-width:1080px;
+  margin-top:auto;padding-top:clamp(18px,3.5vh,42px);
+}
+.shot{
+  position:relative;border-radius:15px;overflow:hidden;
+  aspect-ratio:16/10;
+  border:1px solid rgba(255,255,255,.1);
+  background:#0a0605;
+  box-shadow:0 26px 70px -26px rgba(0,0,0,.95),0 0 0 1px rgba(255,74,18,.08),
+             0 0 70px -30px rgba(255,74,18,.55);
+  transition:transform .6s cubic-bezier(.4,0,.2,1),box-shadow .6s;
+}
+.shot:hover{transform:translateY(-6px);box-shadow:0 36px 90px -26px rgba(0,0,0,1),0 0 100px -30px rgba(255,74,18,.8)}
+.shot svg{width:100%;height:100%}
+.shot::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.18),transparent 35%,transparent 65%,rgba(0,0,0,.55));
+}
+
+/* 底部统计 */
+.hero-bottom{
+  position:relative;z-index:5;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:clamp(14px,3vw,40px);
+  margin-top:clamp(16px,3vh,34px);
+  flex-wrap:wrap;
+}
+.stat{display:flex;flex-direction:column;gap:1px;min-width:88px}
+.stat-num{
+  font-size:clamp(28px,3.6vw,50px);font-weight:900;line-height:1;
+  letter-spacing:-.03em;color:#fff;
+  text-shadow:0 0 40px rgba(255,255,255,.25);
+}
+.stat-label{font-size:11px;letter-spacing:.28em;color:var(--muted)}
+.hero-note{max-width:290px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.hero-note p{font-size:12.5px;line-height:1.75;color:#9b9b9b}
+
+/* ============ 通用板块 ============ */
+.section{
+  position:relative;
+  padding:clamp(70px,10vh,130px) clamp(16px,4vw,56px);
+  max-width:1280px;margin:0 auto;
+}
+.section-head{
+  display:flex;align-items:baseline;gap:16px;
+  margin-bottom:clamp(34px,5vh,64px);
+  flex-wrap:wrap;
+}
+.section-num{
+  font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--accent);
+  padding:3px 9px;border-radius:6px;
+  border:1px solid rgba(255,74,18,.4);
+  background:rgba(255,74,18,.08);
+}
+.section-title{font-size:clamp(26px,3.6vw,44px);font-weight:900;letter-spacing:-.02em}
+.section-sub{font-size:11px;letter-spacing:.4em;color:#5c5c5c;font-weight:600}
+.section-divider{
+  width:100%;height:1px;margin:0 auto;max-width:1280px;
+  background:linear-gradient(90deg,transparent,rgba(255,74,18,.35),transparent);
+}
+
+/* ============ 关于我 ============ */
+.about-grid{
+  display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);
+  gap:clamp(28px,5vw,70px);align-items:start;
+}
+.portrait{position:relative;border-radius:18px;overflow:hidden;
+  border:1px solid var(--line);background:#0b0b0b;
+  box-shadow:0 30px 80px -40px #000;}
+.portrait svg{width:100%;height:auto;filter:grayscale(1) contrast(1.08)}
+.portrait::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.85) 100%)}
+.info-card{
+  position:absolute;left:14px;right:14px;bottom:14px;z-index:2;
+  padding:16px 18px;border-radius:13px;
+  background:rgba(14,10,9,.62);
+  border:1px solid rgba(255,255,255,.13);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;
+}
+.info-item{display:flex;flex-direction:column;gap:2px}
+.info-k{font-size:9.5px;letter-spacing:.24em;color:#7d7d7d}
+.info-v{font-size:12.5px;font-weight:700;color:#fff}
+.about-intro{font-size:clamp(14px,1.5vw,16.5px);line-height:2;color:#c2c2c2;margin-bottom:34px}
+.about-intro strong{color:var(--accent-2);font-weight:800}
+.timeline{position:relative;padding-left:26px}
+.timeline::before{
+  content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1.5px;
+  background:linear-gradient(180deg,var(--accent),rgba(255,74,18,.12));
+}
+.tl-item{position:relative;padding-bottom:26px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:"";position:absolute;left:-26px;top:7px;width:11px;height:11px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--accent);
+  box-shadow:0 0 16px rgba(255,74,18,.9);
+}
+.tl-year{font-size:11px;letter-spacing:.2em;color:var(--accent-2);font-weight:800}
+.tl-title{font-size:15px;font-weight:800;margin:3px 0 4px}
+.tl-desc{font-size:12.5px;color:#8f8f8f;line-height:1.75}
+
+/* ============ 作品 ============ */
+.works-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(30px,5vw,64px) clamp(20px,3vw,44px);
+  align-items:start;
+}
+.work{
+  border-radius:16px;overflow:hidden;cursor:pointer;
+  background:var(--panel);border:1px solid var(--line);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:transform .5s cubic-bezier(.4,0,.2,1),border-color .5s,box-shadow .5s;
+}
+.work:nth-child(even){margin-top:clamp(30px,6vw,86px)}
+.work:hover{transform:translateY(-8px);border-color:rgba(255,74,18,.55);
+  box-shadow:0 34px 80px -30px rgba(255,74,18,.5)}
+.work-media{position:relative;aspect-ratio:16/10;overflow:hidden;background:#0a0605}
+.work-media img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.4,0,.2,1)}
+.work:hover .work-media img{transform:scale(1.06)}
+.work-veil{position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.7));
+  pointer-events:none}
+.work-play{
+  position:absolute;right:16px;bottom:16px;width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;font-size:11px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#120400;font-weight:900;
+  box-shadow:0 0 30px rgba(255,74,18,.7);
+  transform:scale(.82);opacity:0;transition:.45s cubic-bezier(.4,0,.2,1);
+}
+.work:hover .work-play{transform:scale(1);opacity:1}
+.work-body{padding:18px 20px 22px}
+.work-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.work-cat{font-size:10.5px;letter-spacing:.22em;color:var(--accent-2);font-weight:800}
+.work-year{font-size:11px;color:#666}
+.work-title{font-size:clamp(15px,1.7vw,19px);font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+.work-desc{font-size:12.5px;color:#8a8a8a;line-height:1.7}
+
+/* ============ 作品弹窗 ============ */
+.modal{
+  position:fixed;inset:0;z-index:900;display:none;
+  align-items:center;justify-content:center;padding:20px;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.modal.open{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-inner{
+  position:relative;width:min(920px,100%);max-height:88vh;overflow:auto;
+  border-radius:18px;border:1px solid rgba(255,255,255,.12);
+  background:var(--panel-solid);
+  box-shadow:0 40px 120px -30px #000,0 0 90px -40px rgba(255,74,18,.6);
+  animation:popIn .45s cubic-bezier(.4,0,.2,1);
+}
+@keyframes popIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.modal-media{aspect-ratio:16/9;overflow:hidden;background:#0a0605}
+.modal-media img{width:100%;height:100%;object-fit:cover}
+.modal-body{padding:clamp(20px,3vw,34px)}
+.modal-body h3{font-size:clamp(20px,2.6vw,30px);font-weight:900;margin:8px 0 14px}
+.modal-body p{font-size:13.5px;line-height:1.9;color:#a5a5a5}
+.modal-close{
+  position:absolute;top:14px;right:14px;z-index:3;
+  width:38px;height:38px;border-radius:50%;font-size:19px;
+  background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);
+  color:#fff;transition:.3s;
+}
+.modal-close:hover{background:var(--accent);color:#120400;border-color:var(--accent)}
+
+/* ============ 能力 ============ */
+.skills-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(14px,2vw,22px);
+}
+.skill{
+  position:relative;padding:clamp(20px,2.6vw,32px);
+  border-radius:16px;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:.5s cubic-bezier(.4,0,.2,1);
+}
+.skill::before{
+  content:"";position:absolute;inset:0;opacity:0;transition:opacity .5s;
+  background:radial-gradient(circle at 50% 0%,rgba(255,74,18,.22),transparent 70%);
+}
+.skill:hover{transform:translateY(-6px);border-color:rgba(255,74,18,.5)}
+.skill:hover::before{opacity:1}
+.skill-icon{
+  position:relative;width:46px;height:46px;border-radius:12px;
+  display:grid;place-items:center;margin-bottom:18px;
+  background:linear-gradient(140deg,rgba(255,74,18,.22),rgba(255,138,31,.06));
+  border:1px solid rgba(255,74,18,.35);
+  color:var(--accent-2);
+  box-shadow:0 0 34px -10px rgba(255,74,18,.9);
+}
+.skill-icon svg{width:22px;height:22px}
+.skill h3{position:relative;font-size:15.5px;font-weight:800;margin-bottom:8px}
+.skill p{position:relative;font-size:12.5px;color:#8b8b8b;line-height:1.8}
+
+/* ============ 联系 ============ */
+#contact{padding-bottom:0}
+.contact-wrap{
+  position:relative;border-radius:24px;overflow:hidden;
+  padding:clamp(38px,6vw,80px) clamp(22px,4vw,64px);
+  background:linear-gradient(160deg,rgba(255,74,18,.14),rgba(255,138,31,.03) 45%,rgba(255,255,255,.02));
+  border:1px solid rgba(255,74,18,.25);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  text-align:center;
+  box-shadow:0 40px 120px -50px rgba(255,74,18,.8);
+}
+.contact-wrap::before{
+  content:"";position:absolute;top:-45%;left:50%;transform:translateX(-50%);
+  width:620px;height:620px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,74,18,.3),transparent 65%);
+  pointer-events:none;
+}
+.contact-wrap h2{
+  position:relative;font-size:clamp(26px,4.4vw,52px);font-weight:900;
+  letter-spacing:-.02em;margin-bottom:14px;
+}
+.contact-wrap h2 em{font-style:normal;color:var(--accent)}
+.contact-sub{position:relative;font-size:13.5px;color:#a8a8a8;margin-bottom:34px}
+.contact-links{
+  position:relative;display:flex;justify-content:center;flex-wrap:wrap;
+  gap:12px;margin-bottom:40px;
+}
+.contact-chip{
+  padding:11px 20px;border-radius:100px;font-size:12.5px;font-weight:700;
+  border:1px solid var(--line);background:rgba(255,255,255,.045);
+  transition:.35s;display:flex;align-items:center;gap:8px;
+}
+.contact-chip:hover{border-color:var(--accent);color:var(--accent-2);
+  box-shadow:0 0 32px -8px rgba(255,74,18,.9);transform:translateY(-3px)}
+.site-footer{
+  margin-top:clamp(46px,7vh,80px);
+  padding:26px 0 34px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:11.5px;color:#5f5f5f;letter-spacing:.08em;
+}
+
+/* ============ 编辑台 ============ */
+.editor-panel{
+  position:fixed;top:0;right:0;bottom:0;z-index:950;
+  width:min(370px,100%);display:flex;flex-direction:column;
+  background:rgba(10,8,7,.92);
+  backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
+  border-left:1px solid rgba(255,74,18,.3);
+  box-shadow:-30px 0 90px -30px rgba(0,0,0,1);
+  transform:translateX(105%);
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
+}
+.editor-panel.open{transform:none}
+.ep-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px;border-bottom:1px solid var(--line);
+}
+.ep-head span{font-size:14px;font-weight:900;letter-spacing:.08em}
+.ep-head span i{color:var(--accent);font-style:normal}
+.ep-head button{font-size:22px;line-height:1;color:#888;transition:.3s}
+.ep-head button:hover{color:#fff;transform:rotate(90deg)}
+.ep-tabs{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.ep-tabs button{
+  flex:1;padding:9px 4px;border-radius:9px;font-size:12px;font-weight:700;
+  color:#8b8b8b;border:1px solid transparent;transition:.3s;
+}
+.ep-tabs button.active{color:#fff;background:rgba(255,74,18,.16);
+  border-color:rgba(255,74,18,.45);box-shadow:0 0 22px -8px rgba(255,74,18,.9)}
+.ep-body{flex:1;overflow-y:auto;padding:16px 18px}
+.ep-pane{display:none;flex-direction:column;gap:14px}
+.ep-pane.active{display:flex}
+.ep-hint{
+  font-size:11.5px;line-height:1.85;color:#8b8b8b;
+  padding:12px 14px;border-radius:11px;
+  background:rgba(255,74,18,.07);border:1px solid rgba(255,74,18,.22);
+}
+.ep-hint b{color:var(--accent-2)}
+.ep-label{font-size:10.5px;letter-spacing:.2em;color:#6f6f6f;font-weight:800}
+.ep-row{display:flex;align-items:center;gap:8px}
+.ep-input,.ep-select{
+  width:100%;padding:9px 11px;border-radius:9px;font-size:12.5px;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:#fff;outline:none;transition:.3s;font-family:inherit;
+}
+.ep-input:focus,.ep-select:focus{border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(255,74,18,.15)}
+.ep-select option{background:#14100e}
+.sel-box{
+  padding:12px 14px;border-radius:11px;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:10px;
+}
+.sel-name{font-size:12px;font-weight:800;color:var(--accent-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-btn{
+  padding:8px 12px;border-radius:8px;font-size:11.5px;font-weight:700;
+  background:rgba(255,255,255,.06);border:1px solid var(--line);
+  color:#ccc;transition:.3s;white-space:nowrap;
+}
+.mini-btn:hover{border-color:var(--accent);color:var(--accent-2)}
+.color-swatch{
+  width:34px;height:34px;border-radius:8px;padding:0;border:1px solid var(--line);
+  background:transparent;cursor:pointer;flex-shrink:0;
+}
+.work-editor{
+  padding:13px;border-radius:11px;border:1px solid var(--line);
+  background:rgba(255,255,255,.035);display:flex;flex-direction:column;gap:9px;
+}
+.we-head{display:flex;justify-content:space-between;align-items:center;
+  font-size:11.5px;font-weight:800;color:#bbb}
+.we-del{font-size:11px;color:#ff5b3d;opacity:.8;transition:.3s}
+.we-del:hover{opacity:1;text-decoration:underline}
+.upload-btn{
+  display:block;text-align:center;padding:10px;border-radius:9px;
+  border:1px dashed rgba(255,74,18,.5);color:var(--accent-2);
+  font-size:11.5px;font-weight:700;cursor:pointer;transition:.3s;
+  background:rgba(255,74,18,.06);
+}
+.upload-btn:hover{background:rgba(255,74,18,.16)}
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.theme-btn{
+  padding:13px 10px;border-radius:11px;border:1px solid var(--line);
+  background:rgba(255,255,255,.035);display:flex;flex-direction:column;
+  gap:8px;align-items:flex-start;transition:.3s;text-align:left;
+}
+.theme-btn.active{border-color:var(--accent);box-shadow:0 0 28px -10px rgba(255,74,18,.9);
+  background:rgba(255,74,18,.1)}
+.theme-dots{display:flex;gap:5px}
+.theme-dots i{width:14px;height:14px;border-radius:50%;display:block}
+.theme-btn span{font-size:11.5px;font-weight:700;color:#ccc}
+.ep-foot{
+  display:flex;gap:10px;padding:16px 18px;
+  border-top:1px solid var(--line);
+}
+.ep-foot button{flex:1;padding:12px;border-radius:11px;font-size:13px;font-weight:800;transition:.3s}
+.btn-ghost{
+  background:rgba(255,255,255,.05);border:1px solid var(--line);color:#aaa;
+}
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:#fff}
+.btn-save{
+  background:linear-gradient(100deg,var(--accent),var(--accent-2));color:#120400;
+  box-shadow:0 8px 30px -8px rgba(255,74,18,.9);
+}
+.btn-save:hover{filter:brightness(1.12);transform:translateY(-1px)}
+
+/* 编辑模式元素样式 */
+body.editing [data-ek]{
+  outline:1px dashed rgba(255,74,18,.45);
+  outline-offset:4px;cursor:move;border-radius:3px;
+  transition:outline-color .2s,background .2s;
+}
+body.editing [data-ek]:hover{
+  outline-color:rgba(255,74,18,.95);background:rgba(255,74,18,.07);
+}
+body.editing [data-ek].selected{
+  outline:2px solid var(--accent);background:rgba(255,74,18,.1);
+  box-shadow:0 0 0 4px rgba(255,74,18,.12);
+}
+body.editing [data-ek][contenteditable="true"]{
+  outline:2px solid #fff;background:rgba(255,255,255,.08);
+  cursor:text;box-shadow:0 0 0 4px rgba(255,255,255,.1);
+}
+body.editing .work{cursor:default}
+
+/* 滚动条 */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:#0a0807}
+::-webkit-scrollbar-thumb{background:rgba(255,74,18,.4);border-radius:9px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,74,18,.75)}
+
+/* ============ 响应式 ============ */
+@media (max-width:1024px){
+  .about-grid{grid-template-columns:1fr;max-width:560px;margin:0 auto}
+  .skills-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:820px){
+  .site-nav{display:none}
+  .hero-title{white-space:normal;line-height:.92}
+  .works-grid{grid-template-columns:1fr}
+  .work:nth-child(even){margin-top:0}
+  .hero-bottom{gap:20px}
+  .hero-note{max-width:none;width:100%}
+  .stat-num{font-size:30px}
+}
+@media (max-width:560px){
+  .skills-grid{grid-template-columns:1fr}
+  .hero-gallery{grid-template-columns:1fr}
+  .shot{aspect-ratio:16/9}
+  .info-card{grid-template-columns:1fr 1fr;padding:12px 14px}
+  .section{padding-left:16px;padding-right:16px}
+  .site-header{padding:16px 0}
+  .logo{font-size:14px}
+  .btn-accent{padding:9px 16px;font-size:12px}
+  .icon-btn{width:34px;height:34px}
+  .hero-bottom .stat:nth-child(2){display:none}
+  .editor-panel{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= 开屏动画 ================= -->
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-ring"></div>
+    <div class="splash-name">张方迪</div>
+    <div class="splash-sub">AI FILM EDITOR</div>
+    <div class="splash-bar"><i></i></div>
+  </div>
+</div>
+
+<!-- ================= 首屏 ================= -->
+<section id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-glow"></div>
+  <div class="hero-vignette"></div>
+
+  <header class="site-header">
+    <a class="logo" href="#hero">
+      <span class="logo-mark"></span>
+      <span data-ek="logo-text">张方迪</span>
+    </a>
+    <nav class="site-nav">
+      <a href="#hero">首页</a>
+      <a href="#about">关于</a>
+      <a href="#works">作品</a>
+      <a href="#skills">能力</a>
+      <a href="#contact">联系</a>
+    </nav>
+    <div class="header-right">
+      <button id="gearBtn" class="icon-btn" title="打开编辑台" aria-label="编辑台">⚙</button>
+      <a href="#contact" class="btn-accent" data-ek="hero-cta-top">联系我</a>
+    </div>
+  </header>
+
+  <div class="hero-main">
+    <div class="title-block">
+      <h1 class="hero-title" data-ek="hero-title">ZHANG FANGDI</h1>
+      <div class="slash-row"><span class="hero-slash" data-ek="hero-slash">/ 2025</span></div>
+    </div>
+    <p class="hero-tagline" data-ek="hero-tagline">用剪辑重构想象 · AI FILMMAKING</p>
+
+    <div class="hero-gallery">
+      <!-- 图1：戴发光 VR 眼镜仰头特写 -->
+      <figure class="shot">
+        <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="戴发光VR眼镜的人物仰头特写">
+          <defs>
+            <radialGradient id="hbg1" cx="50%" cy="58%" r="65%">
+              <stop offset="0%" stop-color="#3a0f00"/>
+              <stop offset="55%" stop-color="#160604"/>
+              <stop offset="100%" stop-color="#050202"/>
+            </radialGradient>
+            <radialGradient id="hglow1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ff6a1a" stop-opacity=".85"/>
+              <stop offset="100%" stop-color="#ff2a00" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="hskin" x1="0" y1="0" x2="0.2" y2="1">
+              <stop offset="0%" stop-color="#4a2417"/>
+              <stop offset="45%" stop-color="#25110b"/>
+              <stop offset="100%" stop-color="#0b0504"/>
+            </linearGradient>
+            <linearGradient id="lens" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fff2d8"/>
+              <stop offset="45%" stop-color="#ffb15a"/>
+              <stop offset="100%" stop-color="#ff4a12"/>
+            </linearGradient>
+            <filter id="soft1" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="26"/>
+            </filter>
+            <filter id="glowF1" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="13" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="800" height="500" fill="url(#hbg1)"/>
+          <ellipse cx="400" cy="270" rx="300" ry="200" fill="url(#hglow1)" opacity=".5" filter="url(#soft1)"/>
+          <g opacity=".5" filter="url(#soft1)">
+            <rect x="330" y="0" width="12" height="200" fill="#ff5a12" opacity=".55"/>
+            <rect x="390" y="0" width="26" height="230" fill="#ff8a1f" opacity=".38"/>
+            <rect x="450" y="0" width="10" height="180" fill="#ff2a00" opacity=".5"/>
+          </g>
+          <path d="M160 500 Q195 372 320 344 L480 344 Q605 372 640 500 Z" fill="url(#hskin)"/>
+          <path d="M330 350 Q400 392 470 350 L470 400 Q400 430 330 400 Z" fill="#000" opacity=".45"/>
+          <ellipse cx="400" cy="228" rx="118" ry="140" fill="url(#hskin)"/>
+          <ellipse cx="400" cy="168" rx="86" ry="52" fill="#6b3520" opacity=".35"/>
+          <path d="M310 260 Q400 218 490 260 Q472 348 400 362 Q328 348 310 260 Z" fill="#000" opacity=".28"/>
+          <rect x="272" y="168" width="256" height="70" rx="30" fill="#150705" stroke="#3a1a0e" stroke-width="2"/>
+          <g filter="url(#glowF1)">
+            <rect x="286" y="178" width="108" height="50" rx="20" fill="url(#lens)"/>
+            <rect x="406" y="178" width="108" height="50" rx="20" fill="url(#lens)"/>
+          </g>
+          <rect x="286" y="178" width="108" height="50" rx="20" fill="#fff" opacity=".28"/>
+          <rect x="406" y="178" width="108" height="50" rx="20" fill="#fff" opacity=".28"/>
+          <rect x="394" y="196" width="12" height="18" rx="5" fill="#1a0a06"/>
+          <path d="M272 190 Q238 196 232 224 Q230 250 258 254" stroke="#1e0d07" stroke-width="13" fill="none" stroke-linecap="round"/>
+          <path d="M528 190 Q562 196 568 224 Q570 250 542 254" stroke="#1e0d07" stroke-width="13" fill="none" stroke-linecap="round"/>
+          <g filter="url(#soft1)" opacity=".75">
+            <ellipse cx="340" cy="203" rx="70" ry="42" fill="#ff8a1f"/>
+            <ellipse cx="460" cy="203" rx="70" ry="42" fill="#ff6a1a"/>
+          </g>
+          <g fill="#ffb070" opacity=".85">
+            <circle cx="150" cy="120" r="2.4"/><circle cx="640" cy="90" r="1.9"/>
+            <circle cx="700" cy="300" r="2.6"/><circle cx="105" cy="330" r="1.7"/>
+            <circle cx="560" cy="420" r="2.2"/><circle cx="240" cy="60" r="1.5"/>
+            <circle cx="470" cy="60" r="1.8"/><circle cx="90" cy="210" r="2"/>
+          </g>
+          <rect width="800" height="500" fill="url(#hglow1)" opacity=".16"/>
+        </svg>
+      </figure>
+
+      <!-- 图2：红橙竖条光影前多人剪影 -->
+      <figure class="shot">
+        <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="红橙竖条光影前的多人剪影">
+          <defs>
+            <linearGradient id="barG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ff5a12" stop-opacity="0"/>
+              <stop offset="42%" stop-color="#ff6a1a" stop-opacity=".95"/>
+              <stop offset="100%" stop-color="#ff2a00" stop-opacity="0"/>
+            </linearGradient>
+            <radialGradient id="bgb" cx="50%" cy="50%" r="70%">
+              <stop offset="0%" stop-color="#2a0a00"/>
+              <stop offset="100%" stop-color="#060303"/>
+            </radialGradient>
+            <filter id="soft2" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="14"/>
+            </filter>
+          </defs>
+          <rect width="800" height="500" fill="url(#bgb)"/>
+          <g>
+            <rect x="24" y="0" width="16" height="500" fill="url(#barG)" opacity=".8"/>
+            <rect x="92" y="0" width="8" height="500" fill="url(#barG)" opacity=".55"/>
+            <rect x="150" y="0" width="22" height="500" fill="url(#barG)" opacity=".9"/>
+            <rect x="230" y="0" width="11" height="500" fill="url(#barG)" opacity=".6"/>
+            <rect x="300" y="0" width="26" height="500" fill="url(#barG)" opacity=".95"/>
+            <rect x="392" y="0" width="9" height="500" fill="url(#barG)" opacity=".5"/>
+            <rect x="450" y="0" width="20" height="500" fill="url(#barG)" opacity=".85"/>
+            <rect x="532" y="0" width="12" height="500" fill="url(#barG)" opacity=".65"/>
+            <rect x="600" y="0" width="24" height="500" fill="url(#barG)" opacity=".92"/>
+            <rect x="690" y="0" width="10" height="500" fill="url(#barG)" opacity=".55"/>
+            <rect x="750" y="0" width="18" height="500" fill="url(#barG)" opacity=".8"/>
+          </g>
+          <g filter="url(#soft2)" opacity=".85">
+            <rect x="146" y="120" width="30" height="260" fill="#ff6a1a"/>
+            <rect x="296" y="90" width="34" height="320" fill="#ff8a1f"/>
+            <rect x="446" y="130" width="28" height="250" fill="#ff5a12"/>
+            <rect x="596" y="100" width="32" height="300" fill="#ff7a1a"/>
+          </g>
+          <g fill="#040202">
+            <ellipse cx="120" cy="286" rx="27" ry="30"/>
+            <path d="M74 500 Q82 336 120 330 Q158 336 166 500 Z"/>
+            <ellipse cx="232" cy="268" rx="30" ry="33"/>
+            <path d="M182 500 Q192 318 232 312 Q272 318 282 500 Z"/>
+            <ellipse cx="352" cy="248" rx="33" ry="36"/>
+            <path d="M298 500 Q308 298 352 292 Q396 298 406 500 Z"/>
+            <ellipse cx="472" cy="272" rx="29" ry="32"/>
+            <path d="M424 500 Q434 322 472 316 Q510 322 520 500 Z"/>
+            <ellipse cx="592" cy="256" rx="31" ry="34"/>
+            <path d="M540 500 Q550 306 592 300 Q634 306 644 500 Z"/>
+            <ellipse cx="706" cy="288" rx="26" ry="29"/>
+            <path d="M662 500 Q670 338 706 332 Q742 338 750 500 Z"/>
+          </g>
+          <rect y="452" width="800" height="48" fill="#ff4a12" opacity=".12"/>
+          <ellipse cx="400" cy="470" rx="380" ry="40" fill="#ff6a1a" opacity=".14" filter="url(#soft2)"/>
+        </svg>
+      </figure>
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="stat">
+      <div class="stat-num" data-ek="stat1-num">08</div>
+      <div class="stat-label" data-ek="stat1-label">年剪辑经验</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-ek="stat2-num">120+</div>
+      <div class="stat-label" data-ek="stat2-label">项目交付</div>
+    </div>
+    <div class="hero-note">
+      <p data-ek="hero-note-text">专注 AI 影像创作与商业剪辑，用节奏与光影讲述品牌故事。</p>
+      <a class="btn-accent" href="#works" data-ek="hero-note-btn">查看作品 →</a>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ================= 关于我 ================= -->
+<section id="about" class="section">
+  <div class="section-head">
+    <span class="section-num">01</span>
+    <h2 class="section-title" data-ek="about-title">关于我</h2>
+    <span class="section-sub">ABOUT ME</span>
+  </div>
+
+  <div class="about-grid">
+    <div class="portrait">
+      <svg viewBox="0 0 500 620" preserveAspectRatio="xMidYMid slice" role="img" aria-label="人物黑白肖像">
+        <defs>
+          <radialGradient id="pbg" cx="50%" cy="35%" r="75%">
+            <stop offset="0%" stop-color="#2a2a2a"/>
+            <stop offset="100%" stop-color="#080808"/>
+          </radialGradient>
+          <linearGradient id="pface" x1="0.15" y1="0" x2="0.9" y2="1">
+            <stop offset="0%" stop-color="#4d4d4d"/>
+            <stop offset="55%" stop-color="#2b2b2b"/>
+            <stop offset="100%" stop-color="#131313"/>
+          </linearGradient>
+          <filter id="pblur"><feGaussianBlur stdDeviation="30"/></filter>
+        </defs>
+        <rect width="500" height="620" fill="url(#pbg)"/>
+        <ellipse cx="270" cy="200" rx="200" ry="180" fill="#3a3a3a" opacity=".35" filter="url(#pblur)"/>
+        <path d="M30 620 Q70 420 250 396 Q430 420 470 620 Z" fill="#181818"/>
+        <path d="M205 350 L295 350 L300 430 Q250 452 200 430 Z" fill="#1d1d1d"/>
+        <ellipse cx="250" cy="222" rx="112" ry="134" fill="url(#pface)"/>
+        <path d="M138 210 Q140 96 250 84 Q360 96 362 210 Q350 150 300 132 Q250 118 200 132 Q150 150 138 210 Z" fill="#111"/>
+        <path d="M330 130 Q372 200 352 300 Q336 380 288 412 Q348 356 356 262 Q362 178 330 130 Z" fill="#6e6e6e" opacity=".5"/>
+        <ellipse cx="205" cy="212" rx="26" ry="11" fill="#0a0a0a" opacity=".85"/>
+        <ellipse cx="300" cy="212" rx="26" ry="11" fill="#0a0a0a" opacity=".85"/>
+        <path d="M252 224 L244 282 Q252 292 262 284" stroke="#0d0d0d" stroke-width="6" fill="none" stroke-linecap="round" opacity=".8"/>
+        <path d="M216 320 Q250 332 286 320" stroke="#0a0a0a" stroke-width="5" fill="none" stroke-linecap="round" opacity=".85"/>
+        <rect width="500" height="620" fill="url(#pbg)" opacity=".18"/>
+      </svg>
+      <div class="info-card">
+        <div class="info-item"><span class="info-k">NAME</span><span class="info-v" data-ek="info-name">张方迪</span></div>
+        <div class="info-item"><span class="info-k">ROLE</span><span class="info-v" data-ek="info-role">AI 剪辑师 / 影像导演</span></div>
+        <div class="info-item"><span class="info-k">BASE</span><span class="info-v" data-ek="info-base">上海 · 中国</span></div>
+        <div class="info-item"><span class="info-k">MAIL</span><span class="info-v" data-ek="info-mail">hi@zhangfangdi.com</span></div>
+      </div>
+    </div>
+
+    <div class="about-right">
+      <p class="about-intro" data-ek="about-intro">
+        我是张方迪，一名专注 <strong>AI 影像创作</strong> 与商业剪辑的剪辑师。<br>
+        过去 8 年里，我把故事拆成帧，再把帧拼回故事。<br>
+        从 AIGC 短片到品牌 TVC，从音乐视觉到展映影像，<br>
+        我始终相信：<strong>节奏是情绪的心跳，光影是叙事的方向。</strong>
+      </p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-year">2022 — 至今</div>
+          <div class="tl-title">自由影像导演 / AI 剪辑师</div>
+          <div class="tl-desc">为品牌与创作者提供 AI 影像全流程服务，交付商业片、概念片与展映作品 60+。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2019 — 2022</div>
+          <div class="tl-title">某头部影视制作公司 · 高级剪辑师</div>
+          <div class="tl-desc">主导 30+ 品牌 TVC 剪辑与调色，参与多部网剧后期，负责节奏与情绪线重构。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2017 — 2019</div>
+          <div class="tl-title">新媒体影像团队 · 剪辑师</div>
+          <div class="tl-desc">负责短视频、MV 与活动影像的剪辑包装，累计播放量破亿。</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2017</div>
+          <div class="tl-title">影视后期专业 · 毕业</div>
+          <div class="tl-desc">主修剪辑与视听语言，同年获得校级短片创作一等奖。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ================= 精选作品 ================= -->
+<section id="works" class="section">
+  <div class="section-head">
+    <span class="section-num">02</span>
+    <h2 class="section-title" data-ek="works-title">精选作品</h2>
+    <span class="section-sub">SELECTED WORKS</span>
+  </div>
+  <div class="works-grid" id="worksGrid"></div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ================= 能力介绍 ================= -->
+<section id="skills" class="section">
+  <div class="section-head">
+    <span class="section-num">03</span>
+    <h2 class="section-title" data-ek="skills-title">能力介绍</h2>
+    <span class="section-sub">CAPABILITIES</span>
+  </div>
+  <div class="skills-grid">
+    <div class="skill">
+      <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 5h18M3 12h13M3 19h18"/><circle cx="20" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+      <h3 data-ek="skill1-t">AI 视频剪辑</h3>
+      <p data-ek="skill1-d">熟练运用剪映、Pr、达芬奇完成从粗剪到精剪的全流程，擅长节奏把控与情绪曲线设计。</p>
+    </div>
+    <div class="skill">
+      <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2.5"/><path d="M9.5 2.5v3.5M14.5 2.5v3.5M9.5 18v3.5M14.5 18v3.5M2.5 9.5H6M2.5 14.5H6M18 9.5h3.5M18 14.5h3.5"/></svg></div>
+      <h3 data-ek="skill2-t">AIGC 影像生成</h3>
+      <p data-ek="skill2-d">精通 Midjourney、Runway、可灵、即梦等工具，完成分镜生成、图生视频与镜头延展。</p>
+    </div>
+    <div class="skill">
+      <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="8.6" cy="9.6" r="1.4" fill="currentColor" stroke="none"/><circle cx="15.4" cy="9.6" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="16" r="1.4" fill="currentColor" stroke="none"/></svg></div>
+      <h3 data-ek="skill3-t">调色与影调</h3>
+      <p data-ek="skill3-d">基于达芬奇进行一级 / 二级调色，擅长电影感青橙、胶片颗粒与高对比暗调风格。</p>
+    </div>
+    <div class="skill">
+      <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12v-2M7.5 12V6.5M12 12V3M16.5 12V7M21 12V4"/></svg></div>
+      <h3 data-ek="skill4-t">声音设计</h3>
+      <p data-ek="skill4-d">环境音铺陈、音效设计与音乐卡点，让声音成为情绪的第二条叙事线。</p>
+    </div>
+    <div class="skill">
+      <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="M10 9.2l5.4 2.8-5.4 2.8z" fill="currentColor" stroke="none"/></svg></div>
+      <h3 data-ek="skill5-t">动效包装</h3>
+      <p data-ek="skill5-d">After Effects 字幕动效、转场设计与视觉包装，让画面在细节里长出质感。</p>
+    </div>
+    <div class="skill">
+      <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h11l4 4v14H5z"/><path d="M8.5 9h7M8.5 13h7M8.5 17h4"/></svg></div>
+      <h3 data-ek="skill6-t">内容策划</h3>
+      <p data-ek="skill6-d">从脚本拆解到分镜设计，帮助品牌把抽象诉求翻译成可被看见的画面语言。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 联系方式 ================= -->
+<section id="contact" class="section">
+  <div class="contact-wrap">
+    <h2 data-ek="contact-title">让我们一起 <em>创造</em></h2>
+    <p class="contact-sub" data-ek="contact-sub">有项目想聊聊？随时联系我，24 小时内回复。</p>
+    <div class="contact-links">
+      <a class="contact-chip" href="mailto:hi@zhangfangdi.com" data-ek="contact-mail">✉ hi@zhangfangdi.com</a>
+      <span class="contact-chip" data-ek="contact-wechat">微信 · fangdi_edit</span>
+      <span class="contact-chip" data-ek="contact-phone">电话 · 138-0000-0000</span>
+      <span class="contact-chip" data-ek="contact-city">上海 · 可远程协作</span>
+    </div>
+    <a class="btn-accent" href="mailto:hi@zhangfangdi.com" style="position:relative" data-ek="contact-btn">发起合作 →</a>
+  </div>
+
+  <div class="site-footer">
+    <span data-ek="footer-left">© 2025 张方迪 · All Rights Reserved</span>
+    <span data-ek="footer-right">Designed &amp; Edited by Zhang Fangdi</span>
+  </div>
+</section>
+
+<!-- ================= 作品详情弹窗 ================= -->
+<div class="modal" id="workModal">
+  <div class="modal-inner">
+    <button class="modal-close" id="modalClose">×</button>
+    <div class="modal-media" id="modalMedia"></div>
+    <div class="modal-body">
+      <div class="work-meta">
+        <span class="work-cat" id="modalCat"></span>
+        <span class="work-year" id="modalYear"></span>
+      </div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalDesc"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 编辑台 ================= -->
+<div class="editor-panel" id="editorPanel">
+  <div class="ep-head">
+    <span>编辑台 <i>/</i> STUDIO</span>
+    <button id="epClose">×</button>
+  </div>
+  <div class="ep-tabs">
+    <button data-tab="content" class="active">内容</button>
+    <button data-tab="works">作品</button>
+    <button data-tab="theme">主题</button>
+  </div>
+  <div class="ep-body">
+    <!-- 内容 -->
+    <div class="ep-pane active" data-pane="content">
+      <div class="ep-hint">
+        <b>双击</b>页面上的任意文字即可直接编辑；<br>
+        <b>单击</b>选中元素后可拖动位置、修改颜色与字号；<br>
+        所有修改会<b>自动保存</b>，刷新页面不会丢失。
+      </div>
+      <div class="sel-box" id="selBox">
+        <div class="sel-name" id="selName">未选中元素</div>
+        <div class="ep-row">
+          <input type="color" class="color-swatch" id="selColor" value="#ffffff" title="文字颜色">
+          <button class="mini-btn" id="fontMinus">A−</button>
+          <span id="fontVal" style="font-size:11.5px;color:#aaa;min-width:42px;text-align:center">—</span>
+          <button class="mini-btn" id="fontPlus">A+</button>
+        </div>
+        <div class="ep-row">
+          <button class="mini-btn" id="resetPos" style="flex:1">重置位置</button>
+          <button class="mini-btn" id="resetSel" style="flex:1">重置样式</button>
+        </div>
+      </div>
+      <button class="mini-btn" id="resetAll" style="width:100%;padding:11px">清空全部编辑记录</button>
+    </div>
+
+    <!-- 作品 -->
+    <div class="ep-pane" data-pane="works">
+      <div class="ep-hint">可以上传图片、修改作品信息，或新增 / 删除作品。</div>
+      <div id="workEditorList" style="display:flex;flex-direction:column;gap:11px"></div>
+      <button class="mini-btn" id="addWork" style="width:100%;padding:11px">＋ 新增作品</button>
+    </div>
+
+    <!-- 主题 -->
+    <div class="ep-pane" data-pane="theme">
+      <div class="ep-hint">切换主题会立即生效，并自动保存。</div>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+  </div>
+  <div class="ep-foot">
+    <button class="btn-ghost" id="btnCancel">取消</button>
+    <button class="btn-save" id="btnDone">完成</button>
+  </div>
+</div>
+
+<script>
+/* ==================================================================
+   数据 & 存储
+================================================================== */
+const STORE_KEY = 'zfd_portfolio_v1';
+
+const DEFAULT_WORKS = [
+  { id:'w1', title:'《霓虹脉冲》AI 概念短片', cat:'AI 短片', year:'2024',
+    desc:'以赛博都市为背景的 AIGC 概念短片。全片 2 分 48 秒，镜头由 AI 生成后重新剪辑与调色，配合原创电子配乐完成情绪推进。负责：分镜生成 / 剪辑 / 调色 / 声音设计。' },
+  { id:'w2', title:'《城市回声》品牌 TVC', cat:'商业广告', year:'2024',
+    desc:'为城市生活品牌打造的品牌形象片。以「声音」为线索串联城市切片，剪辑上采用呼吸感留白与快速切换交替的节奏设计。负责：后期剪辑 / 调色 / 动效包装。' },
+  { id:'w3', title:'《量子情书》AIGC 音乐视觉', cat:'MV / 音乐视觉', year:'2023',
+    desc:'为独立音乐人制作的 AI 视觉 MV。用生成式影像构建超现实爱情场景，全片 4 分钟一镜到底式剪辑结构。负责：视觉策划 / AI 生成 / 剪辑 / 合成。' },
+  { id:'w4', title:'《无界》数字艺术展映', cat:'艺术影像', year:'2023',
+    desc:'参与数字艺术展的沉浸式影像作品。三屏同步播放，围绕「边界消融」主题进行影像拼贴与节奏实验。负责：素材重构 / 三屏剪辑 / 影调统一。' },
+  { id:'w5', title:'《风起时》纪录片剪辑', cat:'纪录片', year:'2022',
+    desc:'一部关于西北风电建设者的纪实短片。从 60 小时素材中剪出 18 分钟叙事线，强调人物呼吸与沉默的力量。负责：素材梳理 / 结构剪辑 / 声音设计。' },
+  { id:'w6', title:'《像素黎明》游戏 CG 预告', cat:'CG 动画', year:'2022',
+    desc:'为独立游戏工作室制作的 CG 预告片。以高密度快切与音效冲击构建紧张感，最后 8 秒留白收束。负责：节奏剪辑 / 音效设计 / 字幕动效。' }
+];
+
+const GRADS = [
+  'radial-gradient(circle at 32% 28%, #ff6a1a 0%, #7a1c00 38%, #080404 100%)',
+  'linear-gradient(135deg, #ff8a1f 0%, #a12400 42%, #080404 100%)',
+  'radial-gradient(circle at 70% 30%, #ff4a12 0%, #3d0d00 48%, #060303 100%)',
+  'linear-gradient(200deg, #ffb15a 0%, #ff4a12 30%, #1a0500 100%)',
+  'radial-gradient(circle at 50% 80%, #ff2a00 0%, #4a0d00 45%, #050303 100%)',
+  'linear-gradient(120deg, #2a0a00 0%, #ff5a12 60%, #1a0400 100%)'
+];
+
+const THEMES = {
+  redblack: { name:'红黑流体', dots:['#050505','#ff4a12','#ff8a1f'], vars:{
+    '--bg':'#050505','--bg-2':'#0a0807','--accent':'#ff4a12','--accent-2':'#ff8a1f',
+    '--text':'#ffffff','--muted':'#8b8b8b','--line':'rgba(255,255,255,.09)',
+    '--panel':'rgba(255,255,255,.045)','--panel-solid':'#100c0a','--glow':'rgba(255,74,18,.35)'
+  }},
+  amber: { name:'熔岩琥珀', dots:['#060504','#ffab2e','#ff6a00'], vars:{
+    '--bg':'#060504','--bg-2':'#0c0a06','--accent':'#ffab2e','--accent-2':'#ff6a00',
+    '--text':'#ffffff','--muted':'#8f8a80','--line':'rgba(255,171,46,.14)',
+    '--panel':'rgba(255,171,46,.055)','--panel-solid':'#12100a','--glow':'rgba(255,171,46,.35)'
+  }},
+  cyan: { name:'赛博青蓝', dots:['#04070a','#00d9ff','#7a5cff'], vars:{
+    '--bg':'#04070a','--bg-2':'#070d12','--accent':'#00d9ff','--accent-2':'#7a5cff',
+    '--text':'#ffffff','--muted':'#8493a0','--line':'rgba(0,217,255,.14)',
+    '--panel':'rgba(0,217,255,.05)','--panel-solid':'#081017','--glow':'rgba(0,217,255,.35)'
+  }}
+};
+
+let state = {
+  edits: {},
+  works: JSON.parse(JSON.stringify(DEFAULT_WORKS)),
+  theme: 'redblack'
+};
+
+/* ---------- 读写 ---------- */
+function save(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  catch(e){ console.warn('保存失败（可能超出存储空间）', e); }
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(d && typeof d === 'object'){
+      state.edits = d.edits || {};
+      state.works = Array.isArray(d.works) && d.works.length ? d.works : state.works;
+      state.theme = d.theme || 'redblack';
+    }
+  }catch(e){ console.warn('读取失败', e); }
+}
+
+/* ==================================================================
+   主题
+================================================================== */
+function applyTheme(name){
+  const t = THEMES[name] || THEMES.redblack;
+  const root = document.documentElement;
+  Object.entries(t.vars).forEach(([k,v]) => root.style.setProperty(k, v));
+  state.theme = name;
+  if(window.__updateParticleColor) window.__updateParticleColor();
+}
+
+/* ==================================================================
+   首屏粒子背景
+================================================================== */
+(function initParticles(){
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let particles = [];
+  let running = true;
+  let t = 0;
+
+  function readAccent(){
+    const cs = getComputedStyle(document.documentElement);
+    return {
+      a: (cs.getPropertyValue('--accent') || '#ff4a12').trim(),
+      b: (cs.getPropertyValue('--accent-2') || '#ff8a1f').trim()
+    };
+  }
+  let COLORS = [readAccent().a, readAccent().b, '#ff2a00'];
+
+  window.__updateParticleColor = () => {
+    const c = readAccent();
+    COLORS = [c.a, c.b, c.a, c.b, '#ff2a00'];
+  };
+
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#050505';
+    ctx.fillRect(0, 0, W, H);
+    buildParticles();
+  }
+
+  function buildParticles(){
+    const count = Math.min(340, Math.floor((W * H) / 4200));
+    particles = [];
+    for(let i = 0; i < count; i++){
+      particles.push(newParticle(true));
+    }
+  }
+
+  function newParticle(spread){
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      px: 0, py: 0,
+      life: spread ? Math.random() * 260 : 0,
+      maxLife: 180 + Math.random() * 220,
+      speed: 0.5 + Math.random() * 1.9,
+      size: 0.5 + Math.random() * 1.9,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: 0.25 + Math.random() * 0.75
+    };
+  }
+
+  function fieldAngle(x, y, time){
+    const nx = x * 0.0032, ny = y * 0.0038;
+    return Math.sin(nx + time * 0.35) * 1.7
+         + Math.cos(ny - time * 0.24) * 1.7
+         + Math.sin((nx + ny) * 1.6 + time * 0.18) * 1.1;
+  }
+
+  function frame(){
+    if(!running) return;
+    t += 0.006;
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(5,5,5,0.075)';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.globalCompositeOperation = 'lighter';
+
+    for(let i = 0; i < particles.length; i++){
+      const p = particles[i];
+      const ang = fieldAngle(p.x, p.y, t);
+      p.px = p.x; p.py = p.y;
+      p.x += Math.cos(ang) * p.speed;
+      p.y += Math.sin(ang) * p.speed * 0.75 + 0.12;
+      p.life++;
+
+      const lifeRatio = p.life / p.maxLife;
+      const fade = Math.sin(Math.min(lifeRatio, 1) * Math.PI);
+
+      if(p.life > p.maxLife || p.x < -60 || p.x > W + 60 || p.y < -60 || p.y > H + 60){
+        particles[i] = newParticle(false);
+        continue;
+      }
+
+      ctx.strokeStyle = p.color;
+      ctx.globalAlpha = p.alpha * fade * 0.65;
+      ctx.lineWidth = p.size;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(p.px, p.py);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+
+      if(p.size > 1.5){
+        ctx.globalAlpha = p.alpha * fade * 0.45;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', () => { clearTimeout(window.__rz); window.__rz = setTimeout(resize, 180); });
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden){ running = false; }
+    else { running = true; requestAnimationFrame(frame); }
+  });
+
+  resize();
+  requestAnimationFrame(frame);
+})();
+
+/* ==================================================================
+   开屏动画
+================================================================== */
+(function splash(){
+  const el = document.getElementById('splash');
+  setTimeout(() => {
+    el.classList.add('done');
+    setTimeout(() => el.remove(), 950);
+  }, 3000);
+})();
+
+/* ==================================================================
+   作品渲染
+================================================================== */
+const worksGrid = document.getElementById('worksGrid');
+const workModal = document.getElementById('workModal');
+
+function renderWorks(){
+  worksGrid.innerHTML = state.works.map((w, i) => {
+    const mediaInner = w.img
+      ? `<img src="${escapeAttr(w.img)}" alt="${escapeAttr(w.title)}">`
+      : '';
+    const bgStyle = w.img ? '' : `style="background:${GRADS[i % GRADS.length]}"`;
+    return `
+      <article class="work" data-index="${i}">
+        <div class="work-media" ${bgStyle}>
+          ${mediaInner}
+          <div class="work-veil"></div>
+          <span class="work-play">▶</span>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span class="work-cat" data-ek="work-${i}-cat" data-wi="${i}" data-wf="cat">${w.cat}</span>
+            <span class="work-year" data-ek="work-${i}-year" data-wi="${i}" data-wf="year">${w.year}</span>
+          </div>
+          <h3 class="work-title" data-ek="work-${i}-title" data-wi="${i}" data-wf="title">${w.title}</h3>
+          <p class="work-desc" data-ek="work-${i}-desc" data-wi="${i}" data-wf="desc">${w.desc}</p>
+        </div>
+      </article>`;
+  }).join('');
+
+  worksGrid.querySelectorAll('.work').forEach(card => {
+    card.addEventListener('click', e => {
+      if(document.body.classList.contains('editing')) return;
+      if(e.target.isContentEditable) return;
+      openWorkModal(+card.dataset.index);
+    });
+  });
+}
+
+function escapeAttr(s){
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+function openWorkModal(index){
+  const w = state.works[index];
+  if(!w) return;
+  const media = document.getElementById('modalMedia');
+  media.innerHTML = w.img
+    ? `<img src="${escapeAttr(w.img)}" alt="${escapeAttr(w.title)}">`
+    : `<div style="width:100%;height:100%;background:${GRADS[index % GRADS.length]}"></div>`;
+  document.getElementById('modalCat').textContent = w.cat;
+  document.getElementById('modalYear').textContent = w.year;
+  document.getElementById('modalTitle').textContent = w.title;
+  document.getElementById('modalDesc').textContent = w.desc;
+  workModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+workModal.addEventListener('click', e => { if(e.target === workModal) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+function closeModal(){
+  workModal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ==================================================================
+   编辑状态应用
+================================================================== */
+const ORIGINALS = new Map();
+
+function captureOriginals(){
+  document.querySelectorAll('[data-ek]').forEach(el => {
+    if(el.dataset.wi !== undefined) return;
+    ORIGINALS.set(el, {
+      html: el.innerHTML,
+      style: el.getAttribute('style') || ''
+    });
+  });
+}
+
+function applyEdits(){
+  document.querySelectorAll('[data-ek]').forEach(el => {
+    const ek = el.dataset.ek;
+    const e = state.edits[ek];
+    if(!e) return;
+
+    if(e.html !== undefined && el.dataset.wi === undefined){
+      el.innerHTML = e.html;
+    }
+    if(e.color) el.style.color = e.color;
+    if(e.fontSize) el.style.fontSize = e.fontSize + 'px';
+    if(e.dx !== undefined || e.dy !== undefined){
+      el.style.position = 'relative';
+      el.style.left = (e.dx || 0) + 'px';
+      el.style.top = (e.dy || 0) + 'px';
+    }
+  });
+}
+
+function resetElementStyle(el){
+  const ek = el.dataset.ek;
+  const o = ORIGINALS.get(el);
+  if(o){
+    el.innerHTML = o.html;
+    if(o.style) el.setAttribute('style', o.style);
+    else el.removeAttribute('style');
+  } else {
+    el.style.color = '';
+    el.style.fontSize = '';
+    el.style.position = '';
+    el.style.left = '';
+    el.style.top = '';
+  }
+  delete state.edits[ek];
+  el.contentEditable = 'false';
+}
+
+/* ==================================================================
+   编辑台核心
+================================================================== */
+let editing = false;
+let selectedEl = null;
+let snapshot = null;
+let dragState = null;
+
+const editorPanel = document.getElementById('editorPanel');
+const selName = document.getElementById('selName');
+const selColor = document.getElementById('selColor');
+const fontVal = document.getElementById('fontVal');
+
+document.getElementById('gearBtn').addEventListener('click', () => {
+  if(editing) return;
+  enterEdit();
+});
+
+function enterEdit(){
+  snapshot = JSON.stringify(state);
+  editing = true;
+  document.body.classList.add('editing');
+  editorPanel.classList.add('open');
+  renderWorkEditor();
+  renderThemeGrid();
+  toast('编辑模式已开启 · 双击文字开始编辑');
+}
+
+function exitEdit(commit){
+  editing = false;
+  document.body.classList.remove('editing');
+  editorPanel.classList.remove('open');
+  clearSelection();
+  document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+    el.contentEditable = 'false';
+  });
+
+  if(!commit){
+    if(snapshot){
+      const s = JSON.parse(snapshot);
+      state.edits = s.edits;
+      state.works = s.works;
+      state.theme = s.theme;
+      applyTheme(state.theme);
+      ORIGINALS.forEach((o, el) => {
+        el.innerHTML = o.html;
+        if(o.style) el.setAttribute('style', o.style);
+        else el.removeAttribute('style');
+      });
+      renderWorks();
+      applyEdits();
+      save();
+    }
+    toast('已取消修改');
+  } else {
+    save();
+    toast('修改已保存');
+  }
+  snapshot = null;
+}
+
+document.getElementById('btnDone').addEventListener('click', () => exitEdit(true));
+document.getElementById('btnCancel').addEventListener('click', () => exitEdit(false));
+document.getElementById('epClose').addEventListener('click', () => exitEdit(true));
+
+document.querySelectorAll('.ep-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ep-tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.ep-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`.ep-pane[data-pane="${btn.dataset.tab}"]`).classList.add('active');
+  });
+});
+
+/* ---------- 选中 / 拖拽 ---------- */
+function clearSelection(){
+  if(selectedEl){ selectedEl.classList.remove('selected'); }
+  selectedEl = null;
+  selName.textContent = '未选中元素';
+  fontVal.textContent = '—';
+}
+
+function select(el){
+  clearSelection();
+  selectedEl = el;
+  el.classList.add('selected');
+  const ek = el.dataset.ek || '';
+  selName.textContent = '已选中 · ' + (ek.replace(/^work-/, '作品#').replace(/-/g, ' ') || '元素');
+  const cs = getComputedStyle(el);
+  selColor.value = rgbToHex(cs.color);
+  fontVal.textContent = Math.round(parseFloat(cs.fontSize)) + 'px';
+}
+
+function rgbToHex(rgb){
+  const m = rgb.match(/\d+/g);
+  if(!m) return '#ffffff';
+  return '#' + m.slice(0,3).map(n => (+n).toString(16).padStart(2,'0')).join('');
+}
+
+document.addEventListener('pointerdown', e => {
+  if(!editing) return;
+  if(e.target.closest('#editorPanel')) return;
+  if(e.target.closest('#gearBtn')) return;
+  if(e.target.isContentEditable) return;
+
+  const el = e.target.closest('[data-ek]');
+  if(!el) return;
+
+  e.preventDefault();
+  select(el);
+
+  dragState = {
+    el,
+    startX: e.clientX,
+    startY: e.clientY,
+    ox: parseFloat(el.style.left) || 0,
+    oy: parseFloat(el.style.top) || 0,
+    moved: false
+  };
+  el.setPointerCapture?.(e.pointerId);
+});
+
+document.addEventListener('pointermove', e => {
+  if(!dragState) return;
+  const dx = e.clientX - dragState.startX;
+  const dy = e.clientY - dragState.startY;
+  if(!dragState.moved && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) dragState.moved = true;
+  if(dragState.moved){
+    const el = dragState.el;
+    el.style.position = 'relative';
+    el.style.left = (dragState.ox + dx) + 'px';
+    el.style.top = (dragState.oy + dy) + 'px';
+  }
+});
+
+document.addEventListener('pointerup', () => {
+  if(!dragState) return;
+  if(dragState.moved){
+    const el = dragState.el;
+    const ek = el.dataset.ek;
+    state.edits[ek] = state.edits[ek] || {};
+    state.edits[ek].dx = parseFloat(el.style.left) || 0;
+    state.edits[ek].dy = parseFloat(el.style.top) || 0;
+    save();
+  }
+  dragState = null;
+});
+
+/* ---------- 双击编辑文字 ---------- */
+document.addEventListener('dblclick', e => {
+  if(!editing) return;
+  const el = e.target.closest('[data-ek]');
+  if(!el) return;
+  if(el.isContentEditable) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  el.contentEditable = 'true';
+  el.classList.add('selected');
+  el.focus();
+
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  const onKey = ev => {
+    if(ev.key === 'Escape' || ev.key === 'Enter'){
+      ev.preventDefault();
+      el.blur();
+    }
+  };
+  el.addEventListener('keydown', onKey);
+
+  el.addEventListener('blur', function onBlur(){
+    el.removeEventListener('keydown', onKey);
+    el.removeEventListener('blur', onBlur);
+    el.contentEditable = 'false';
+    el.classList.remove('selected');
+    commitEdit(el);
+  });
+});
+
+function commitEdit(el){
+  const ek = el.dataset.ek;
+  if(!ek) return;
+
+  const html = el.innerHTML;
+
+  if(el.dataset.wi !== undefined){
+    const i = +el.dataset.wi;
+    const f = el.dataset.wf;
+    if(state.works[i]){
+      state.works[i][f] = html;
+      save();
+    }
+  } else {
+    state.edits[ek] = state.edits[ek] || {};
+    state.edits[ek].html = html;
+    save();
+  }
+}
+
+/* ---------- 选中面板：颜色 / 字号 ---------- */
+selColor.addEventListener('input', () => {
+  if(!selectedEl) return;
+  selectedEl.style.color = selColor.value;
+  const ek = selectedEl.dataset.ek;
+  if(ek){
+    state.edits[ek] = state.edits[ek] || {};
+    state.edits[ek].color = selColor.value;
+    save();
+  }
+});
+
+function changeFont(delta){
+  if(!selectedEl) return;
+  const cs = getComputedStyle(selectedEl);
+  let size = Math.round(parseFloat(cs.fontSize));
+  size = Math.max(8, Math.min(220, size + delta));
+  selectedEl.style.fontSize = size + 'px';
+  fontVal.textContent = size + 'px';
+  const ek = selectedEl.dataset.ek;
+  if(ek){
+    state.edits[ek] = state.edits[ek] || {};
+    state.edits[ek].fontSize = size;
+    save();
+  }
+}
+document.getElementById('fontPlus').addEventListener('click', () => changeFont(2));
+document.getElementById('fontMinus').addEventListener('click', () => changeFont(-2));
+
+document.getElementById('resetPos').addEventListener('click', () => {
+  if(!selectedEl) return;
+  const ek = selectedEl.dataset.ek;
+  selectedEl.style.left = '0px';
+  selectedEl.style.top = '0px';
+  if(ek && state.edits[ek]){
+    state.edits[ek].dx = 0;
+    state.edits[ek].dy = 0;
+    save();
+  }
+});
+
+document.getElementById('resetSel').addEventListener('click', () => {
+  if(!selectedEl) return;
+  resetElementStyle(selectedEl);
+  save();
+  clearSelection();
+});
+
+document.getElementById('resetAll').addEventListener('click', () => {
+  if(!confirm('确定清空全部文字 / 样式编辑记录？')) return;
+  state.edits = {};
+  save();
+  location.reload();
+});
+
+/* ==================================================================
+   作品编辑器
+================================================================== */
+const workEditorList = document.getElementById('workEditorList');
+
+function renderWorkEditor(){
+  workEditorList.innerHTML = state.works.map((w, i) => `
+    <div class="work-editor">
+      <div class="we-head">
+        <span>作品 ${i + 1}</span>
+        <button class="we-del" data-del="${i}">删除</button>
+      </div>
+      <input class="ep-input" data-wi="${i}" data-field="title" value="${escapeAttr(w.title)}" placeholder="作品标题">
+      <div class="ep-row">
+        <input class="ep-input" data-wi="${i}" data-field="cat" value="${escapeAttr(w.cat)}" placeholder="分类">
+        <input class="ep-input" data-wi="${i}" data-field="year" value="${escapeAttr(w.year)}" placeholder="年份" style="max-width:86px">
+      </div>
+      <textarea class="ep-input" data-wi="${i}" data-field="desc" rows="3" placeholder="作品描述" style="resize:vertical">${escapeAttr(w.desc)}</textarea>
+      <label class="upload-btn">
+        ${w.img ? '更换图片' : '上传封面图片'}
+        <input type="file" accept="image/*" data-upload="${i}" hidden>
+      </label>
+      ${w.img ? `<button class="mini-btn" data-removeimg="${i}">移除图片</button>` : ''}
+    </div>
+  `).join('');
+
+  workEditorList.querySelectorAll('input[data-field], textarea[data-field]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const i = +inp.dataset.wi;
+      const f = inp.dataset.field;
+      if(state.works[i]){
+        state.works[i][f] = inp.value;
+        save();
+        syncWorkText(i, f, inp.value);
+      }
+    });
+  });
+
+  workEditorList.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = +btn.dataset.del;
+      if(!confirm('确定删除这条作品？')) return;
+      state.works.splice(i, 1);
+      save();
+      renderWorks();
+      applyEdits();
+      renderWorkEditor();
+    });
+  });
+
+  workEditorList.querySelectorAll('[data-upload]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const i = +inp.dataset.upload;
+      const file = inp.files && inp.files[0];
+      if(!file) return;
+      compressImage(file, 1000, 0.82, dataUrl => {
+        state.works[i].img = dataUrl;
+        save();
+        renderWorks();
+        applyEdits();
+        renderWorkEditor();
+        toast('封面已更新');
+      });
+    });
+  });
+
+  workEditorList.querySelectorAll('[data-removeimg]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = +btn.dataset.removeimg;
+      delete state.works[i].img;
+      save();
+      renderWorks();
+      applyEdits();
+      renderWorkEditor();
+    });
+  });
+}
+
+function syncWorkText(i, field, value){
+  const sel = `.work[data-index="${i}"] `;
+  let el = null;
+  if(field === 'title') el = document.querySelector(sel + '.work-title');
+  else if(field === 'desc') el = document.querySelector(sel + '.work-desc');
+  else if(field === 'cat') el = document.querySelector(sel + '.work-cat');
+  else if(field === 'year') el = document.querySelector(sel + '.work-year');
+  if(el) el.textContent = value;
+}
+
+function compressImage(file, maxW, quality, cb){
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+      const cv = document.createElement('canvas');
+      cv.width = w; cv.height = h;
+      const c = cv.getContext('2d');
+      c.drawImage(img, 0, 0, w, h);
+      try{ cb(cv.toDataURL('image/jpeg', quality)); }
+      catch(e){ cb(reader.result); }
+    };
+    img.onerror = () => cb(reader.result);
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('addWork').addEventListener('click', () => {
+  state.works.push({
+    id: 'w' + Date.now(),
+    title: '新作品标题',
+    cat: 'AI 短片',
+    year: '2025',
+    desc: '在这里填写作品描述，说明项目背景、你的职责与创作思路。'
+  });
+  save();
+  renderWorks();
+  applyEdits();
+  renderWorkEditor();
+  toast('已新增一条作品');
+});
+
+/* ==================================================================
+   主题面板
+================================================================== */
+function renderThemeGrid(){
+  const grid = document.getElementById('themeGrid');
+  grid.innerHTML = Object.entries(THEMES).map(([key, t]) => `
+    <button class="theme-btn ${state.theme === key ? 'active' : ''}" data-theme="${key}">
+      <div class="theme-dots">
+        ${t.dots.map(c => `<i style="background:${c};border:1px solid rgba(255,255,255,.18)"></i>`).join('')}
+      </div>
+      <span>${t.name}</span>
+    </button>
+  `).join('');
+
+  grid.querySelectorAll('[data-theme]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyTheme(btn.dataset.theme);
+      save();
+      renderThemeGrid();
+      toast('已切换主题：' + THEMES[btn.dataset.theme].name);
+    });
+  });
+}
+
+/* ==================================================================
+   轻提示
+================================================================== */
+let toastTimer = null;
+function toast(msg){
+  let el = document.getElementById('__toast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = '__toast';
+    el.style.cssText = `
+      position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);
+      z-index:9999;padding:11px 22px;border-radius:100px;
+      background:rgba(20,12,9,.92);backdrop-filter:blur(16px);
+      border:1px solid rgba(255,74,18,.5);color:#fff;
+      font-size:12.5px;font-weight:700;letter-spacing:.03em;
+      box-shadow:0 14px 40px -12px rgba(255,74,18,.75);
+      opacity:0;transition:.4s cubic-bezier(.4,0,.2,1);pointer-events:none;
+    `;
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  requestAnimationFrame(() => {
+    el.style.opacity = '1';
+    el.style.transform = 'translate(-50%,0)';
+  });
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transform = 'translate(-50%,20px)';
+  }, 2200);
+}
+
+/* ==================================================================
+   初始化
+================================================================== */
+(function init(){
+  load();
+  applyTheme(state.theme);
+  renderWorks();
+  captureOriginals();
+  applyEdits();
+
+  document.addEventListener('click', e => {
+    if(!editing) return;
+    if(e.target.closest('#editorPanel')) return;
+    if(e.target.closest('#gearBtn')) return;
+    const a = e.target.closest('a');
+    if(a) e.preventDefault();
+  }, true);
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && editing && !document.querySelector('[contenteditable="true"]')){
+      exitEdit(true);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if(window.__updateParticleColor) window.__updateParticleColor();
+  });
+})();
+</script>
+</body>
+</html>
